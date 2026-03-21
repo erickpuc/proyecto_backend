@@ -6,7 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MedicamentoController;
 use App\Http\Controllers\EspecialidadController;
 
-
+use App\Http\Controllers\DistribuidorController;
+use App\Http\Controllers\AltaPacienteController;
+use App\Http\Controllers\ConsultaController;
 
 ////////especialidades//////////
 Route::get('/especialidades', [EspecialidadController::class, 'index']);
@@ -25,6 +27,42 @@ Route::get('/medicamentos/imagen/{nombre}', [MedicamentoController::class, 'most
 Route::get('/categorias', [MedicamentoController::class, 'categorias']);
 
 /////medicamentos////////////////
+
+
+
+
+
+
+//-------------------------------------------prueba farmacias-------------------------------------------------
+
+
+Route::post('/distribuidores', [DistribuidorController::class, 'addDistribuidor']);
+Route::get('/MostrarDistribuidor', [DistribuidorController::class, 'getApiDistribuidor']);
+Route::delete('/DeleteDistribuidor/{id}', [DistribuidorController::class, 'deleteDistribuidor']);
+
+Route::put("UpdateDistribuidor/{id}",[DistribuidorController::class, "putApiUpdateDistribuidor"]);
+
+
+//-------------------------------------------prueba Doctores-------------------------------------------------
+Route::post('/AltaPaciente', [AltaPacienteController::class, 'addPaciente']);
+Route::get('/MostrarPaciente', [AltaPacienteController::class, 'getApiPaciente']);
+
+
+//-------------------------------------------Consulta--------------------------------------------------------
+Route::post('/AddConsulta', [ConsultaController::class, 'addConsulta']);
+Route::get('/MostrarConsulta', [ConsultaController::class, 'getApiConsulta']);
+
+
+
+
+
+
+
+
+
+
+
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
