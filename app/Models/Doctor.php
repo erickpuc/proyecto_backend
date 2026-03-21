@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Doctor extends Model
+{
+    protected $table = 'doctores';
+
+    protected $fillable = [
+        'usuario_id',
+        'clinica_id',
+        'especialidad_id',
+        'cedula_profesional',
+        'anios_exp',
+        'telefono'
+    ];
+
+    public $timestamps = false;
+
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class);
+    }
+
+    public function clinica()
+    {
+        return $this->belongsTo(Clinica::class);
+    }
+}
