@@ -11,21 +11,21 @@ return new class extends Migration
      */
 public function up()
 {
-    Schema::create('distribuidores', function (Blueprint $table) {
-        $table->id();
-        $table->string('nombre');
-        $table->string('rfc');
-        $table->string('categoria');
-        $table->string('contacto');
-        $table->string('correo');
-        $table->string('telefono');
-        $table->string('direccion');
-        $table->string('entrega');
-        $table->string('ciudad');
-        $table->string('pago');
-        $table->timestamps();
-    });
-}
+Schema::create('distribuidores', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('farmacia_id')->constrained('farmacias');
+    $table->string('nombre', 150)->nullable();
+    $table->string('rfc', 20)->nullable();
+    $table->string('contacto', 120)->nullable();
+    $table->string('correo', 150)->nullable();
+    $table->string('telefono', 20)->nullable();
+    $table->text('direccion')->nullable();
+    $table->string('ciudad', 80)->nullable();
+    $table->boolean('activo')->default(true);
+    $table->string('categoria', 255)->nullable();
+    $table->timestamp('creado_en')->nullable();
+});
+    }
 
     /**
      * Reverse the migrations.

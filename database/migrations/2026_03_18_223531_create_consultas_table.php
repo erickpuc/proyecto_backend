@@ -14,17 +14,33 @@ return new class extends Migration
         Schema::create('consultas', function (Blueprint $table) {
             $table->id();
 
-            
-            $table->foreignId('paciente_id')
-                ->constrained('pacientes')
-                ->onDelete('cascade');
+            //  RELACIONES (BASE DEL SISTEMA)
+            $table->foreignId('cita_id')
+                  ->unique()
+                  ->constrained('citas')
+                  ->cascadeOnDelete();
 
-            $table->text('motivo');
+            $table->foreignId('doctor_id')
+                  ->nullable()
+                  ->constrained('doctores')
+                  ->nullOnDelete();
+
+            $table->foreignId('paciente_id')
+                  ->nullable()
+                  ->constrained('pacientes')
+                  ->cascadeOnDelete();
+
+            //  INFORMACIÓN CLÍNICA
+            $table->text('motivo')->nullable(); //  agregado
             $table->text('sintomas')->nullable();
-            $table->text('notas')->nullable();
+            $table->text('diagnostico')->nullable();
+            $table->text('notas_clinicas')->nullable();
+
+            //  EXTRAS MÉDICOS
             $table->string('examen')->nullable();
             $table->dateTime('fecha_tratamiento')->nullable();
 
+            //  ESTÁNDAR LARAVEL
             $table->timestamps();
         });
     }
