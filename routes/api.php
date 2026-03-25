@@ -49,7 +49,7 @@ Route::get('/categorias', [MedicamentoController::class, 'categorias']);
 Route::post('/distribuidores', [DistribuidorController::class, 'addDistribuidor']);
 Route::get('/MostrarDistribuidor', [DistribuidorController::class, 'getApiDistribuidor']);
 Route::delete('/DeleteDistribuidor/{id}', [DistribuidorController::class, 'deleteDistribuidor']);
-
+Route::get('/distribuidores/select', [DistribuidorController::class, 'getDistribuidoresSelect']);
 Route::put("UpdateDistribuidor/{id}",[DistribuidorController::class, "putApiUpdateDistribuidor"]);
 
 
