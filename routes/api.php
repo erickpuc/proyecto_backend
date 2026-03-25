@@ -10,9 +10,7 @@ use App\Http\Controllers\EspecialidadController;
 use App\Http\Controllers\DistribuidorController;
 use App\Http\Controllers\AltaPacienteController;
 use App\Http\Controllers\ConsultaController;
-
 use App\Http\Controllers\DashboardFarmaciaController;
-use App\Http\Controllers\PacienteController;
 
 
 //Dashboard Farmacia
@@ -56,9 +54,6 @@ Route::put("UpdateDistribuidor/{id}",[DistribuidorController::class, "putApiUpda
 //-------------------------------------------prueba Doctores-------------------------------------------------
 Route::post('/AltaPaciente', [AltaPacienteController::class, 'addPaciente']);
 Route::get('/MostrarPaciente', [AltaPacienteController::class, 'getApiPaciente']);
-
-
-Route::post('/PACIENTE', [PacienteController::class, 'addPaciente']);
 
 
 //-------------------------------------------Consulta--------------------------------------------------------
