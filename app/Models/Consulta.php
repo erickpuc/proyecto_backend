@@ -4,16 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AltaPaciente;
+use App\Models\Cita;
+use App\Models\Doctor;
 class Consulta extends Model
 {
     protected $table = 'consultas';
 
     protected $fillable = [
-        'cita_id', 
+        'cita_id',
+        'doctor_id',
         'paciente_id',
         'motivo',
         'sintomas',
-        'notas',
+        'diagnostico',
+        'notas_clinicas',
         'examen',
         'fecha_tratamiento'
     ];
@@ -25,5 +29,15 @@ class Consulta extends Model
     public function paciente()
     {
         return $this->belongsTo(AltaPaciente::class);
+    }
+
+    public function cita()
+    {
+        return $this->belongsTo(Cita::class);
+    }
+
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class);
     }
 }
