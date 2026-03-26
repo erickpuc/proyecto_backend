@@ -11,7 +11,7 @@ class Consulta extends Model
     protected $table = 'consultas';
 
     protected $fillable = [
-        'cita_id',
+        'cita_id', 
         'doctor_id',
         'paciente_id',
         'motivo',
@@ -22,9 +22,8 @@ class Consulta extends Model
         'fecha_tratamiento'
     ];
 
-        //  ESTA ES LA CLAVE
-    const CREATED_AT = 'creado_en';
-    const UPDATED_AT = null;
+    //  Laravel estándar
+    public $timestamps = true;
 
     public function paciente()
     {
