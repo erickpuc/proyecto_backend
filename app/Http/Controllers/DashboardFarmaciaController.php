@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 use Carbon\Carbon;
 
 class DashboardFarmaciaController extends Controller
@@ -95,24 +97,48 @@ class DashboardFarmaciaController extends Controller
         // ================================
         // RECETAS (CON PAGINACIÓN)
         // ================================
-        $perPage = $request->input('per_page', 5);
+ $perPage = $request->input('per_page', 5);
 
-        $recetas = DB::table('recetas as r')
-           ->join('pacientes as p', 'r.paciente_id', '=', 'p.id')
-           ->join('usuarios as u', 'p.usuario_id', '=', 'u.id')
-           ->leftJoin('receta_detalle as rd', 'r.id', '=', 'rd.receta_id')
-           ->leftJoin('medicamentos as m', 'rd.medicamento_id', '=', 'm.id')
-           ->select(
-               'r.id',
-               'u.nombre as paciente',
-            DB::raw('GROUP_CONCAT(m.nombre SEPARATOR ", ") as medicamento'),
-            DB::raw('TIME(r.creado_en) as hora'),
-           'r.estado as prioridad'
-            )
-            ->whereBetween('r.creado_en', [$inicio, $fin])
-            ->groupBy('r.id', 'u.nombre', 'r.creado_en', 'r.estado')
-            ->orderBy('r.creado_en', 'desc')
-            ->paginate($perPage);
+$recetas = DB::table('recetas as r')
+   ->join('pacientes as p', 'r.paciente_id', '=', 'p.id')
+   ->join('usuarios as u', 'p.usuario_id', '=', 'u.id')
+
+   //  DOCTOR
+   ->leftJoin('doctores as doc', 'r.doctor_id', '=', 'doc.id')
+   ->leftJoin('usuarios as u_doc', 'doc.usuario_id', '=', 'u_doc.id')
+
+   ->leftJoin('receta_detalle as rd', 'r.id', '=', 'rd.receta_id')
+   ->leftJoin('medicamentos as m', 'rd.medicamento_id', '=', 'm.id')
+
+->select(
+    'r.id',
+    'r.doctor_id',
+
+    'u.nombre as paciente',
+
+    DB::raw('GROUP_CONCAT(m.nombre SEPARATOR ", ") as medicamento'),
+    DB::raw('TIME(r.creado_en) as hora'),
+    'r.estado as prioridad',
+
+    //  DOCTOR
+    'u_doc.nombre as doctor',
+    'u_doc.foto_url as foto_doctor',
+    //  PACIENTE FOTO
+    'u.foto_url as foto_paciente'
+)
+   ->whereBetween('r.creado_en', [$inicio, $fin])
+->groupBy(
+    'r.id',
+    'r.doctor_id',
+    'u.nombre',
+    'u.foto_url', // paciente
+    'u_doc.nombre', // doctor nombre
+    'u_doc.foto_url',
+    'r.creado_en',
+    'r.estado'
+)
+   ->orderBy('r.creado_en', 'desc')
+   ->paginate($perPage);
 
         // ================================
         // RESPUESTA
@@ -129,4 +155,18 @@ class DashboardFarmaciaController extends Controller
             'consumo' => $consumo
         ]);
     }
+
+    public function mostrar_imagen_usuario($nombre_imagen)
+{
+    $path = storage_path('app/public/fotos/usuarios/' . $nombre_imagen);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    return Response::make($file, 200)->header("Content-Type", $type);
+}
 }

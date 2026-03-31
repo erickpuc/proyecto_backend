@@ -17,6 +17,8 @@ use App\Http\Controllers\RecetaController;
 Route::get('/medicamentosselct', [MedicamentoController::class, 'index']);
 Route::get('/proveedores', [DistribuidorController::class, 'proveedores']);
 Route::get('/recetas', [RecetaController::class, 'recetas']);
+Route::get('/recetas/farmacia', [RecetaController::class, 'index']);
+Route::get('/recetas/stats', [RecetaController::class, 'stats']);
 Route::get('/movimientos', [MovimientoInventarioController::class, 'index']);
 Route::post('/guardarMovimientos', [MovimientoInventarioController::class, 'store']);
 ///////////RUTAS MOVIMIENTO INVENTARIO//////////
@@ -24,6 +26,7 @@ Route::post('/guardarMovimientos', [MovimientoInventarioController::class, 'stor
 
 //Dashboard Farmacia
 Route::get('/dashboard-farmacia', [DashboardFarmaciaController::class, 'index']);
+Route::get('/dashboard-farmacia/imagen/{nombre_imagen}', [DashboardFarmaciaController::class, 'mostrar_imagen_usuario']);
 
 ////////especialidades//////////
 Route::get('/especialidades', [EspecialidadController::class, 'index']);
