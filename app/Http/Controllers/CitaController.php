@@ -64,4 +64,13 @@ public function citasPorDoctor($doctor_id)
 
     return response()->json($citas);
 }
+
+public function cambiarEstado(Request $request, $id)
+{
+    $cita = Cita::findOrFail($id);
+    $cita->estado = $request->estado;
+    $cita->save();
+
+    return response()->json(["ok" => true]);
+}
 }

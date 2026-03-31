@@ -14,7 +14,7 @@ use App\Http\Controllers\DashboardFarmaciaController;
 use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\CitaController;
 
-
+Route::put('/citas/{id}/estado', [CitaController::class, 'cambiarEstado']);
 Route::get('/pacientes-doctor/{doctor_id}', [CitaController::class, 'pacientesPorDoctor']);
 Route::post('/citas', [CitaController::class, 'store']);
 Route::get('/citas-doctor/{doctor_id}', [CitaController::class, 'citasPorDoctor']);
@@ -77,6 +77,7 @@ Route::get('/MostrarPaciente', [AltaPacienteController::class, 'getApiPaciente']
 //-------------------------------------------Consulta--------------------------------------------------------
 Route::post('/AddConsulta', [ConsultaController::class, 'addConsulta']);
 Route::get('/MostrarConsulta', [ConsultaController::class, 'getApiConsulta']);
+Route::post('/finalizar-consulta', [ConsultaController::class, 'finalizarConsulta']);
 
 
 ///erick

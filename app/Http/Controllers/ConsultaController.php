@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Models\Consulta;
 use Illuminate\Http\Request;
 use App\Models\AltaPaciente;
+use Illuminate\Support\Facades\DB;
+use App\Models\Receta;
+use App\Models\RecetaDetalle;
 
 class ConsultaController extends Controller
 {
@@ -64,5 +67,62 @@ public function getByPaciente($pacienteId)
     return response()->json([
         'consultas' => $consultas
     ]);
+}
+
+public function finalizarConsulta(Request $request)
+{
+    DB::beginTransaction();
+
+    try {
+
+        // 1. CREAR CONSULTA
+        $consulta = Consulta::create([
+            'cita_id' => $request->cita_id,
+            'doctor_id' => $request->doctor_id,
+            'paciente_id' => $request->paciente_id,
+            'motivo' => $request->motivo,
+            'sintomas' => $request->sintomas,
+            'diagnostico' => $request->diagnostico,
+            'notas_clinicas' => $request->notas,
+            'examen' => $request->examen,
+            'fecha_tratamiento' => $request->fecha_tratamiento
+        ]);
+
+        // 2. CREAR RECETA
+        $receta = Receta::create([
+            'consulta_id' => $consulta->id,
+            'doctor_id' => $request->doctor_id,
+            'paciente_id' => $request->paciente_id,
+            'farmacia_id' => $request->farmacia_id, // opcional
+            'estado' => 'pendiente'
+        ]);
+
+        // 3. DETALLE RECETA
+        foreach ($request->medicamentos as $med) {
+            RecetaDetalle::create([
+                'receta_id' => $receta->id,
+                'medicamento_id' => $med['medicamento_id'],
+                'dosis' => $med['dosis'],
+                'frecuencia' => $med['frecuencia'],
+                'duracion' => $med['duracion'],
+                'instrucciones' => $med['instrucciones'],
+            ]);
+        }
+
+        DB::commit();
+
+        return response()->json([
+            "ok" => true,
+            "mensaje" => "Consulta y receta creadas",
+            "consulta" => $consulta,
+            "receta" => $receta
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            "error" => $e->getMessage()
+        ], 500);
+    }
 }
 }
