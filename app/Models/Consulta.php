@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\AltaPaciente;
 use App\Models\Cita;
 use App\Models\Doctor;
+use App\Models\Receta;
 class Consulta extends Model
 {
     protected $table = 'consultas';
@@ -39,4 +40,8 @@ class Consulta extends Model
     {
         return $this->belongsTo(Doctor::class);
     }
+
+    public function receta() {
+    return $this->hasOne(Receta::class, 'consulta_id');
+}
 }

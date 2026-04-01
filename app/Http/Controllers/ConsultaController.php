@@ -50,12 +50,17 @@ class ConsultaController extends Controller
     ], 201);
 }
 
-     public function getApiConsulta() {
-     // Se usa el método all para obtener todos los formularios
-     // "SELECT * FROM formularios"
-    $consulta = Consulta::with('paciente.usuario', 'cita', 'doctor')->get();
+public function getApiConsulta() {
+
+    $consulta = Consulta::with([
+        'paciente.usuario',
+        'cita',
+        'doctor.usuario',
+        'receta.detalles.medicamento' // LA MAGIA
+    ])->get();
+
     return response()->json($consulta);
-    }
+}
 
 
 public function getByPaciente($pacienteId)

@@ -13,6 +13,10 @@ use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\DashboardFarmaciaController;
 use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\CitaController;
+use App\Http\Controllers\UsuarioController;
+
+
+Route::get('/usuario/foto/{nombre}', [UsuarioController::class, 'obtenerFotoUsuario']);
 
 Route::put('/citas/{id}/estado', [CitaController::class, 'cambiarEstado']);
 Route::get('/pacientes-doctor/{doctor_id}', [CitaController::class, 'pacientesPorDoctor']);
