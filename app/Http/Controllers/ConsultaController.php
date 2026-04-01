@@ -99,7 +99,8 @@ public function finalizarConsulta(Request $request)
             'doctor_id' => $request->doctor_id,
             'paciente_id' => $request->paciente_id,
             'farmacia_id' => $request->farmacia_id, // opcional
-            'estado' => 'pendiente'
+            'estado' => 'pendiente',
+            'creado_en' => now()
         ]);
 
         // 3. DETALLE RECETA
@@ -129,5 +130,20 @@ public function finalizarConsulta(Request $request)
             "error" => $e->getMessage()
         ], 500);
     }
+}
+
+public function tratamientosLargos($doctor_id)
+{
+    $hoy = now();
+
+    $tratamientos = \App\Models\Cita::with(['paciente.usuario'])
+        ->where('doctor_id', $doctor_id)
+        ->where(function ($query) {
+            $query->where('motivo', 'like', '%SEGUIMIENTO%')
+                  ->orWhere('motivo', 'like', '%RUTINA%');
+        })
+        ->get();
+
+    return response()->json($tratamientos);
 }
 }

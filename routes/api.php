@@ -15,7 +15,7 @@ use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\UsuarioController;
 
-
+Route::get('/tratamientos-largos/{doctor_id}', [ConsultaController::class, 'tratamientosLargos']);
 Route::get('/usuario/foto/{nombre}', [UsuarioController::class, 'obtenerFotoUsuario']);
 
 Route::put('/citas/{id}/estado', [CitaController::class, 'cambiarEstado']);
