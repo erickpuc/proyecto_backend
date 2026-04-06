@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use App\Models\Rol;
 
 class AuthController extends Controller
 {
@@ -146,7 +147,9 @@ if ($request->rol_id == 3) {
             'password' => 'required'
         ]);
 
-        $usuario = Usuario::where('correo', $request->correo)->first();
+        $usuario = Usuario::with(['paciente', 'doctor', 'clinica', 'farmacia', 'rol'])
+    ->where('correo', $request->correo)
+    ->first();
 
         // Usuario no existe
         if (!$usuario) {
@@ -182,6 +185,10 @@ if ($request->rol_id == 3) {
         'nombre' => $usuario->nombre,
         'correo' => $usuario->correo,
         'foto_url' => $usuario->foto_url, // CLAVE
+        'paciente_id' => $usuario->paciente?->id,
+'doctor_id' => $usuario->doctor?->id,
+'clinica_id' => $usuario->clinica?->id,
+'farmacia_id' => $usuario->farmacia?->id,
     ],
     'token' => $token
 ]);

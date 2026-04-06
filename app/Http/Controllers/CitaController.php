@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cita;
+use Illuminate\Support\Facades\DB;
 use App\Models\Paciente;
 use Carbon\Carbon;
 use App\Models\Usuario;
@@ -137,13 +138,14 @@ public function citasDelDoctorPorPaciente($paciente_id)
 
 public function storeDesdePaciente(Request $request)
 {
-    // 1️⃣ Validar datos
+    //  Validar datos
     $request->validate([
         'usuario_id' => 'required',
-        'fecha_fin' => 'required'
+        'fecha_fin' => 'required',
+        'doctor_id' => 'nullable|exists:doctores,id' 
     ]);
 
-    // 2️⃣ Buscar el paciente usando el usuario
+    //  Buscar el paciente usando el usuario
     $paciente = Paciente::where('usuario_id', $request->usuario_id)->first();
 
     if (!$paciente) {
@@ -152,12 +154,12 @@ public function storeDesdePaciente(Request $request)
         ], 404);
     }
 
-    // 3️⃣ Calcular fecha_inicio (30 minutos antes)
+    //  Calcular fecha_inicio (30 minutos antes)
     $fecha_inicio = Carbon::parse($request->fecha_fin)->subMinutes(30);
 
-    // 4️⃣ Crear la cita con TODOS los datos correctos
+    //  Crear la cita con TODOS los datos correctos
     $cita = Cita::create([
-        'doctor_id'    => $paciente->doctor_id,
+        'doctor_id'    => $request->doctor_id ?? $paciente->doctor_id,
         'paciente_id'  => $paciente->id,
         'clinica_id'   => $paciente->doctor->clinica_id ?? null,
         'fecha_inicio' => $fecha_inicio,
@@ -183,5 +185,70 @@ public function obtenerDoctorPaciente($usuario_id)
     return response()->json([
         'doctor_id' => $paciente->doctor_id
     ]);
+}
+
+public function getDoctores($usuarioId)
+{
+    // 1. Obtener paciente
+    $paciente = DB::table('pacientes')
+        ->where('usuario_id', $usuarioId)
+        ->first();
+
+    if (!$paciente) {
+        return response()->json(['error' => 'Paciente no encontrado'], 404);
+    }
+
+    // 2. Obtener doctor principal
+    $doctor = DB::table('doctores')
+        ->where('id', $paciente->doctor_id)
+        ->first();
+
+    if (!$doctor) {
+        return response()->json([]);
+    }
+
+    // 3. Obtener TODOS los doctores de la clínica
+    $doctores = DB::table('doctores as d')
+        ->join('usuarios as u', 'd.usuario_id', '=', 'u.id')
+        ->leftJoin('especialidades as e', 'd.especialidad_id', '=', 'e.id')
+        ->where('d.clinica_id', $doctor->clinica_id)
+        ->select(
+            'd.id',
+            'u.nombre',
+            'u.foto_url',
+            'd.anios_exp',
+            'e.nombre as especialidad'
+        )
+        ->get();
+
+    return response()->json($doctores);
+}
+
+
+
+public function citasFuturas($paciente_id)
+{
+    $hoy = Carbon::now()->startOfDay(); //  CAMBIO CLAVE
+
+    $citas = Cita::with('doctor.usuario', 'doctor.especialidad')
+        ->where('paciente_id', $paciente_id)
+        ->where('fecha_fin', '>=', $hoy)
+        ->orderBy('fecha_fin', 'asc')
+        ->get();
+
+    return response()->json($citas);
+}
+
+public function citasPasadas($paciente_id)
+{
+    $hoy = Carbon::now()->startOfDay(); //  IGUAL AQUÍ
+
+    $citas = Cita::with('doctor.usuario', 'doctor.especialidad')
+        ->where('paciente_id', $paciente_id)
+        ->where('fecha_fin', '<', $hoy)
+        ->orderBy('fecha_fin', 'desc')
+        ->get();
+
+    return response()->json($citas);
 }
 }

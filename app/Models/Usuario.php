@@ -46,4 +46,19 @@ class Usuario extends Authenticatable
         'notificacion_id'
     )->withPivot('habilitado')->withTimestamps();
 }
+
+public function doctor()
+{
+    return $this->hasOne(Doctor::class, 'usuario_id');
+}
+
+public function clinica()
+{
+    return $this->hasOne(Clinica::class, 'usuario_id');
+}
+
+public function farmacia()
+{
+    return $this->hasOne(Farmacia::class, 'usuario_id');
+}
 }
