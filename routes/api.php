@@ -15,6 +15,9 @@ use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\NotificacionesController;
+use App\Http\Controllers\PlanesController;
+use App\Http\Controllers\SuscripcionController;
+use App\Http\Controllers\StripeController;
 
 Route::get('/recetas/paciente/{id}', [ConsultaController::class, 'recetasPorPaciente']);
 Route::get('/consulta/paciente/{id}/ultima', [ConsultaController::class, 'ultimaConsultaConReceta']);
@@ -134,3 +137,30 @@ Route::get('/doctores',[DoctorController::class,'index']);
 Route::post('/doctores',[DoctorController::class,'store']);
 Route::put('/doctores/{id}',[DoctorController::class,'update']);
 Route::delete('/doctores/{id}',[DoctorController::class,'destroy']);
+
+
+
+//->middleware('check.suscripcion');
+
+Route::post('/AddPlanes', [PlanesController::class, 'AddPlanes']);
+
+
+Route::post('/add-suscripcion', [SuscripcionController::class, 'AddSuscripcion']);
+
+/*
+Route::post('/pacientes', [PacienteController::class, 'store'])
+    ->middleware('check.suscripcion');
+*/
+
+Route::post('/test', function () {
+    return response()->json([
+        'message' => 'Acceso permitido'
+    ]);
+})->middleware('check.suscripcion');
+
+
+Route::post('/stripe-session', [StripeController::class, 'crearSesion']);
+Route::post('/stripe-webhook', [StripeController::class, 'webhook']);
+
+
+Route::post('/pago', [StripeController::class, 'pagar']);

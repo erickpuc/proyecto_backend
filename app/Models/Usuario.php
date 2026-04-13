@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens; //  IMPORTANTE
 use App\Models\Notificacion;
 use App\Models\UsuarioNotificacion;
+use App\Models\Suscripciones;
 
 class Usuario extends Authenticatable
 {
@@ -60,5 +61,11 @@ public function clinica()
 public function farmacia()
 {
     return $this->hasOne(Farmacia::class, 'usuario_id');
+}
+
+//Nuevo
+    public function suscripciones()
+{
+    return $this->hasMany(Suscripciones::class, 'usuario_id');
 }
 }
