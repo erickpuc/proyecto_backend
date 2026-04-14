@@ -143,7 +143,7 @@ Route::delete('/doctores/{id}',[DoctorController::class,'destroy']);
 //->middleware('check.suscripcion');
 
 Route::post('/AddPlanes', [PlanesController::class, 'AddPlanes']);
-
+Route::get('/Getplanes', [PlanesController::class, 'GetPlanes']);
 
 Route::post('/add-suscripcion', [SuscripcionController::class, 'AddSuscripcion']);
 

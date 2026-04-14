@@ -25,12 +25,18 @@ public function crearSesion(Request $request)
                 'currency' => 'mxn',
                 'product_data' => [
                     'name' => $plan->nombre,
+                    'description' => 'Suscripción al plan ' . $plan->nombre . ' con acceso completo'
+                    
                 ],
                 'unit_amount' => $plan->precio * 100,
             ],
             'quantity' => 1,
         ]],
         'mode' => 'payment',
+
+        'payment_intent_data' => [
+        'description' => 'Pago de plan ' . $plan->nombre,
+        ],
 
         'success_url' => 'http://localhost:3000/success',
         'cancel_url' => 'http://localhost:3000/cancel',
@@ -76,7 +82,7 @@ public function pagar(Request $request)
 {
     \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
-    // 🔥 BUSCAS EL PLAN
+    
     $plan = Planes::find($request->plan_id);
 
     if (!$plan) {

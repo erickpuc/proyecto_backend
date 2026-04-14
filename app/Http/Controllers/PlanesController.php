@@ -16,4 +16,10 @@ class PlanesController extends Controller
     $planes->duracion_dias=$data['duracion_dias'];
     $planes->save();
     return response()->json(["message" => "Plan creado correctamente","data" => $planes], 201);}
+
+
+public function GetPlanes(){
+    $planes = Planes::all();
+    return response()->json($planes, 200);
+}
 }
