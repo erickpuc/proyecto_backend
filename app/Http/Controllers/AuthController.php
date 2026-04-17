@@ -185,6 +185,7 @@ if ($request->rol_id == 3) {
         'nombre' => $usuario->nombre,
         'correo' => $usuario->correo,
         'foto_url' => $usuario->foto_url, // CLAVE
+        'rol' => $usuario->rol->nombre,
         'paciente_id' => $usuario->paciente?->id,
 'doctor_id' => $usuario->doctor?->id,
 'clinica_id' => $usuario->clinica?->id,

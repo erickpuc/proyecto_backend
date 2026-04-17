@@ -169,4 +169,50 @@ $recetas = DB::table('recetas as r')
 
     return Response::make($file, 200)->header("Content-Type", $type);
 }
+
+public function recetasHoy(Request $request)
+{
+    $perPage = $request->input('per_page', 5);
+
+    $hoyInicio = Carbon::today()->startOfDay();
+    $hoyFin = Carbon::today()->endOfDay();
+
+    $recetas = DB::table('recetas as r')
+        ->join('pacientes as p', 'r.paciente_id', '=', 'p.id')
+        ->join('usuarios as u', 'p.usuario_id', '=', 'u.id')
+
+        ->leftJoin('doctores as doc', 'r.doctor_id', '=', 'doc.id')
+        ->leftJoin('usuarios as u_doc', 'doc.usuario_id', '=', 'u_doc.id')
+
+        ->leftJoin('receta_detalle as rd', 'r.id', '=', 'rd.receta_id')
+        ->leftJoin('medicamentos as m', 'rd.medicamento_id', '=', 'm.id')
+        ->leftJoin('inventario as i', 'm.id', '=', 'i.medicamento_id')
+
+ ->select(
+    'r.id',
+    'r.estado',
+    'u.nombre as paciente',
+    'u.foto_url as foto_paciente',
+    'u_doc.nombre as doctor',
+    DB::raw('TIME(r.creado_en) as hora'),
+
+    DB::raw('GROUP_CONCAT(
+        CONCAT(
+            m.nombre, "|",
+            m.presentacion, "|",
+            m.requiere_receta, "|",
+            IFNULL(i.stock,0), "|",
+            IFNULL(i.precio_venta,0)
+        ) SEPARATOR ";;"
+    ) as medicamentos')
+)
+->groupBy('r.id', 'r.estado', 'u.nombre', 'u.foto_url', 'u_doc.nombre', 'r.creado_en')
+        ->whereBetween('r.creado_en', [$hoyInicio, $hoyFin])
+        ->orderBy('r.creado_en', 'desc')
+        ->paginate($perPage);
+
+    return response()->json([
+        'recetas' => $recetas
+    ]);
+}
 }

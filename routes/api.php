@@ -19,6 +19,10 @@ use App\Http\Controllers\PlanesController;
 use App\Http\Controllers\SuscripcionController;
 use App\Http\Controllers\StripeController;
 
+
+Route::put('/recetas/{id}', [RecetaController::class, 'actualizarEstado']);
+Route::get('/farmacia/recetas-hoy', [DashboardFarmaciaController::class, 'recetasHoy']);
+
 Route::get('/recetas/paciente/{id}', [ConsultaController::class, 'recetasPorPaciente']);
 Route::get('/consulta/paciente/{id}/ultima', [ConsultaController::class, 'ultimaConsultaConReceta']);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Receta;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class RecetaController extends Controller
 {
@@ -44,4 +45,37 @@ public function index(Request $request)
             'entregadas' => (clone $base)->where('estado', 'entregada')->count(),
         ]);
     }
+
+
+    public function actualizarEstado(Request $request, $id)
+{
+    $receta = DB::table('recetas')->where('id', $id)->first();
+
+    if (!$receta) {
+        return response()->json(['error' => 'Receta no encontrada'], 404);
+    }
+
+    // 🔥 Si pasa a entregado → descontar stock
+    if ($request->estado === 'entregado' && $receta->estado !== 'entregado') {
+
+        $detalles = DB::table('receta_detalle')
+            ->where('receta_id', $id)
+            ->get();
+
+        foreach ($detalles as $d) {
+            DB::table('inventario')
+                ->where('medicamento_id', $d->medicamento_id)
+                ->where('stock', '>', 0)
+                ->decrement('stock', 1);
+        }
+    }
+
+    DB::table('recetas')
+        ->where('id', $id)
+        ->update([
+            'estado' => $request->estado
+        ]);
+
+    return response()->json(['ok' => true]);
+}
 }

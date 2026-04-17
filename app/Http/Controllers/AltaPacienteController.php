@@ -34,7 +34,7 @@ public function addPaciente(Request $request)
     $paciente = new AltaPaciente();
 
     $paciente->usuario_id = $usuario->id;
-    $paciente->doctor_id = 1; //  AQUI LO ASIGNAS FIJO
+    $paciente->doctor_id = $request->doctor_id; //  AQUI LO ASIGNAS FIJO
 
     $paciente->nacimiento = $request->nacimiento;
     $paciente->genero = $request->genero;
