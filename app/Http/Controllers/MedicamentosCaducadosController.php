@@ -36,6 +36,15 @@ class MedicamentosCaducadosController extends Controller
             'data' => $caducado,
         ], 201);
     }
+
+    public function getCaducados()
+    {
+        $caducados = MedicamentosCaducados::with('inventario.medicamento')->get();
+
+        return response()->json([
+            'data' => $caducados,
+        ], 200);
+    }
 }
 
 
