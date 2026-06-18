@@ -66,6 +66,7 @@ public function farmacia()
 //Nuevo
     public function suscripciones()
 {
-    return $this->hasMany(Suscripciones::class, 'usuario_id');
+    //antes hasMany, ahora hasOne
+    return $this->hasOne(Suscripciones::class, 'usuario_id');
 }
 }

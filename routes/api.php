@@ -217,3 +217,7 @@ Route::post('/pago', [StripeController::class, 'pagar']);
 
 Route::post('/medicamentoCaducado', [MedicamentosCaducadosController::class, 'store']);
 Route::get('/getcaducados', [MedicamentosCaducadosController::class, 'getCaducados']);
+
+
+
+
