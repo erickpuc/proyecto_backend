@@ -29,9 +29,29 @@ use App\Http\Controllers\TipoPagoDoctorController;
 use App\Http\Controllers\PagoDoctorController;
 use App\Http\Controllers\HorarioDoctorController;
 use App\Http\Controllers\MedicamentosCaducadosController;
+use App\Http\Controllers\HabitacionController;
+use App\Http\Controllers\InstrumentoMedicoController;
+use App\Http\Controllers\ConsultorioInstrumentoController;
 
 
 /*NUEVO*/
+
+Route::apiResource(
+    'habitaciones',
+    HabitacionController::class
+);
+
+Route::apiResource(
+    'instrumentos',
+    InstrumentoMedicoController::class
+);
+
+Route::apiResource(
+    'consultorio-instrumentos',
+    ConsultorioInstrumentoController::class
+);
+
+
 
 Route::get(
     '/pagos-doctores',
