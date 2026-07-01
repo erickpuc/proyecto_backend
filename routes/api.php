@@ -34,6 +34,31 @@ use App\Http\Controllers\AsistenciaController;
 
 /*NUEVO*/
 
+
+Route::apiResource(
+    'habitaciones',
+    HabitacionController::class
+);
+
+Route::apiResource(
+    'instrumentos',
+    InstrumentoMedicoController::class
+);
+Route::get(
+    '/consultorio-instrumentos/inventario',
+    [ConsultorioInstrumentoController::class, 'inventario']
+);
+Route::apiResource(
+    'consultorio-instrumentos',
+    ConsultorioInstrumentoController::class
+);
+
+
+Route::get('/consultorio-instrumentos',[ConsultorioInstrumentoController::class, 'index']);
+
+
+
+
 Route::get(
     '/pagos-doctores',
     [PagoDoctorController::class,'index']
@@ -177,9 +202,7 @@ Route::get('/perfil/{id}', [PerfilController::class, 'obtenerPerfil']);
 
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
 
 Route::get('/doctores',[DoctorController::class,'index']);
 Route::post('/doctores',[DoctorController::class,'store']);
