@@ -1,5 +1,11 @@
 <?php
 
+use App\Models\User;
+use App\Models\Usuario;
+use App\Models\HistorialPago;
+use Illuminate\Support\Facades\Hash;
+
+
 use App\Http\Controllers\DoctorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,9 +29,35 @@ use App\Http\Controllers\TipoPagoDoctorController;
 use App\Http\Controllers\PagoDoctorController;
 use App\Http\Controllers\HorarioDoctorController;
 use App\Http\Controllers\MedicamentosCaducadosController;
+use App\Http\Controllers\AsistenciaController;
 
 
 /*NUEVO*/
+
+
+Route::apiResource(
+    'habitaciones',
+    HabitacionController::class
+);
+
+Route::apiResource(
+    'instrumentos',
+    InstrumentoMedicoController::class
+);
+Route::get(
+    '/consultorio-instrumentos/inventario',
+    [ConsultorioInstrumentoController::class, 'inventario']
+);
+Route::apiResource(
+    'consultorio-instrumentos',
+    ConsultorioInstrumentoController::class
+);
+
+
+Route::get('/consultorio-instrumentos',[ConsultorioInstrumentoController::class, 'index']);
+
+
+
 
 Route::get(
     '/pagos-doctores',
@@ -172,14 +204,6 @@ Route::get('/perfil/{id}', [PerfilController::class, 'obtenerPerfil']);
 
 
 
-
-
-
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
 Route::get('/doctores',[DoctorController::class,'index']);
 Route::post('/doctores',[DoctorController::class,'store']);
 Route::put('/doctores/{id}',[DoctorController::class,'update']);
@@ -199,11 +223,6 @@ Route::post('/pacientes', [PacienteController::class, 'store'])
     ->middleware('check.suscripcion');
 */
 
-Route::post('/test', function () {
-    return response()->json([
-        'message' => 'Acceso permitido'
-    ]);
-})->middleware('check.suscripcion');
 
 
 Route::post('/stripe-session', [StripeController::class, 'crearSesion']);
@@ -219,5 +238,15 @@ Route::post('/medicamentoCaducado', [MedicamentosCaducadosController::class, 'st
 Route::get('/getcaducados', [MedicamentosCaducadosController::class, 'getCaducados']);
 
 
+///erick
 
+Route::get('/doctores', [DoctorController::class, 'index']);
 
+Route::get('/especialidades', [DoctorController::class, 'getEspecialidades']);
+
+// Historial global para el módulo de clínicas
+Route::get('/clinic/asistencias', [AsistenciaController::class, 'clinicIndex']);
+
+// Acciones de autogestión de asistencia del doctor
+Route::post('/asistencias', [AsistenciaController::class, 'stores']);
+Route::get('/doctores/{id}/asistencias', [AsistenciaController::class, 'doctorIndex']);
