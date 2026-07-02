@@ -23,8 +23,11 @@ return [
     'https://proyecto-frontend-seven.vercel.app', // aquí va tu dominio de Vercel cuando lo tengas
     ],
 
-    'allowed_origins_patterns' => [],
-
+'allowed_origins' => [
+    'http://localhost:5173',
+    'https://proyecto-frontend-beta.vercel.app',
+    'https://proyecto-frontend-seven.vercel.app',
+],
     'allowed_headers' => ['*'],
 
     'exposed_headers' => [],
